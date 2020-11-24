@@ -1,14 +1,23 @@
 #NoEnv 
 #SingleInstance, Force
+#Include, Lib/IniFile.ahk
 SendMode Input
 SetWorkingDir, %A_ScriptDir%
 
 
+configFile := new IniFile("config.ini") ; """open""" the config file
+
+
 InputBox rawPlayerList, Enter player List, Enter list of online players, , ,150
 rawPlayerList := RegExReplace(rawPlayerList, "\xA7.|\s|\[HIDDEN\]") ; Sanitize Input (remove "§" formatting codes and white space) 
-OutputDebug, % rawPlayerList
 players := StrSplit(rawPlayerList, ",")
-playerIndex = 0
+playerIndex := 0
+
+Hotkey, % configFile.readKey("Hotkeys", "tp_to_next_player", "XButton2"), nextPlayer
+Hotkey, % configFile.readKey("Hotkeys", "tp_to_previous_player", "XButton2"), previousPlayer
+
+OutputDebug, % rawPlayerList
+
 tpToPlayer(player){
   send, /
   Sleep, 100
@@ -37,12 +46,7 @@ previousPlayer() {
   tpToPlayer(players[playerIndex])
 } 
 
-XButton2::
-  nextPlayer()
-  return
-XButton1::
-  previousPlayer()
-  return 
+
 
 
 ; §f§f§f§fplayer1, player2,player3
