@@ -16,7 +16,7 @@ tpToPlayer(player){
   send {Enter}
 }
 
-nextPlayer(){
+nextPlayer() {
   global
   playerIndex += 1
   ; OutputDebug, % players.MaxIndex()
