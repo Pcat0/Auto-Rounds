@@ -3,23 +3,28 @@
 SendMode Input
 SetWorkingDir, %A_ScriptDir%
 
-InputBox rawPlayerList, Enter player List, Enter list of online players, , ,150
-rawPlayerList := RegExReplace(rawPlayerList, "\xA7.|\s") ; Sanitize Input (remove "§" formatting codes and white space) 
 
+InputBox rawPlayerList, Enter player List, Enter list of online players, , ,150
+rawPlayerList := RegExReplace(rawPlayerList, "\xA7.|\s|\[HIDDEN\]") ; Sanitize Input (remove "§" formatting codes and white space) 
+OutputDebug, % rawPlayerList
 players := StrSplit(rawPlayerList, ",")
 playerIndex = 0
+tpToPlayer(player){
+  send, /
+  Sleep, 100
+  send, % "tpo " . player
+  send {Enter}
+}
 
 nextPlayer(){
   global
   playerIndex += 1
   ; OutputDebug, % players.MaxIndex()
   if (playerIndex > players.MaxIndex()){
-    MsgBox, 0x40, Rounds finished, test, 1
+    MsgBox, 0x40, Rounds finished, All online players have been teleported to, 1
     ExitApp 
   } else {
-    send, t
-    send, % "/tpo " . players[playerIndex]
-    send {Enter}
+    tpToPlayer(players[playerIndex])
   }
 }
 
@@ -29,9 +34,7 @@ previousPlayer() {
   if (playerIndex < 1){
     playerIndex := 1
   }
-  send, t
-  send, % "/tpo " . players[playerIndex]
-  send {Enter}
+  tpToPlayer(players[playerIndex])
 } 
 
 XButton2::
