@@ -21,13 +21,20 @@ class PlayerList {
         set {
             temp := value
             if (temp < this.players.MinIndex()) {
-                temp := this.players.MinIndex()
+                temp := this.onUnderflow(temp, this.players.MinIndex())
             }
             if (temp > this.players.MaxIndex()) {
-                temp := this.players.MaxIndex()
+                temp := this.onOverFlow(temp, this.players.MaxIndex())
             }
             return this._index := temp
         }
+    }
+    onOverFlow(newValue, maxValue) { ; TODO: make behavior more dynamic
+        ExitApp, 1
+        return maxValue
+    }
+    onUnderflow(newValue, minValue) { ; TODO: make behavior more dynamic
+        return minValue
     }
     __new(rawPlayerList) {
         rawPlayerList := RegExReplace(rawPlayerList, "\xA7.|\s|\[HIDDEN\]") ; Sanitize Input (remove "§" formatting codes and white space) 
@@ -40,6 +47,9 @@ class PlayerList {
     previousPlayer() {
         OutputDebug, % "Previous"
         this.index -= 1
+    }
+    offset(i) {
+        return this.players[this.index + i]
     }
 
 }
